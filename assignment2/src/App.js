@@ -1,18 +1,38 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
+import CharComponent from './CharComponent/CharComponent';
+import ValidationComponent from './ValidationComponent/ValidationComponent';
+
 class App extends Component {
+  state = {
+    userInputValue: '',
+  }
+
+
+  changeValueHandler = (event) => {
+    console.log(event)
+    this.setState({userInputValue: event.target.value});
+  }
+
+  clickToDeleteHandler = (index) => {
+    const modifyText = this.state.userInputValue.split('');
+    modifyText.splice(index, 1);
+    const newText = modifyText.join('');
+    this.setState({userInputValue: newText});
+  }
+
   render() {
+    const chars = this.state.userInputValue.split('').map((c,index)=>{
+      return <CharComponent character={c} key={index} clicked={() => this.clickToDeleteHandler(index)}/>
+    });
+
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <input onChange={(event)=>this.changeValueHandler(event)} type='text' value={this.state.userInputValue} />
+        <p>{this.state.userInputValue}</p>
+        <ValidationComponent inputLength={this.state.userInputValue.length}/>
+        {chars}
       </div>
     );
   }
